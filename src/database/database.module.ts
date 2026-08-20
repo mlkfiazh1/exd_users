@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Users } from './entities/user.entity';
+import { UsersRepository } from './repositories/user.repository';
 
 @Module({
   imports: [
@@ -13,16 +15,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           username: process.env.DATABASE_USERNAME,
           password: process.env.DATABASE_PASSWORD,
           database: process.env.DATABASE_NAME,
-          entities: [],
+          entities: [Users],
           synchronize: true,
           poolSize: 10,
         };
       },
       inject: [ModuleRef], // Inject ModuleRef to access providers dynamically
     }),
-    TypeOrmModule.forFeature([]),
+    TypeOrmModule.forFeature([Users]),
   ],
-  providers: [],
-  exports: [],
+  providers: [UsersRepository],
+  exports: [UsersRepository],
 })
 export class DatabaseModule {}
