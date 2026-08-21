@@ -29,7 +29,7 @@ export class Users {
   otpCode?: number;
 
   @Index('user-status-idx')
-  @Column({ type: 'tinyint', default: 3, unsigned: true }) // 0 = delete, 1 = Active, 2 = Inactive, 3 = Unverified
+  @Column({ type: 'tinyint', default: 1, unsigned: true }) // 0 = delete, 1 = Active, 2 = Inactive, 3 = Unverified
   status?: number;
 
   @CreateDateColumn()
