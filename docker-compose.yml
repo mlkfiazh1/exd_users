@@ -1,0 +1,57 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: nestjs-app
+    restart: always
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    environment:
+      # Override DB host to point at the mysql service name, not localhost
+      DB_HOST: mysqltest
+      DB_PORT: 3306
+    depends_on:
+      mysqltest:
+        condition: service_healthy
+    networks:
+      - mysqltest
+
+  mysqltest:
+    image: mysql:8.0
+    container_name: mysqltest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: nestdb
+    ports:
+      - '6446:3306'
+    volumes:
+      - mysqltest:/var/lib/mysql
+    networks:
+      - mysqltest
+    restart: always
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'mysqladmin',
+          'ping',
+          '-h',
+          'localhost',
+          '-u',
+          'root',
+          '-ppassword',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  mysqltest:
+
+networks:
+  mysqltest:
